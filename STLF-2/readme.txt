@@ -1,14 +1,11 @@
 ================================================================
 SHORT TERM LOAD FORECASTING ROI PROTOTYPE 1
-THIS ANALYZES FORECAST ON DAYS THAT HAVE ALREADY OCCURED
 ================================================================
 --------Changes to be made for REAL FORECAST--------------------
 		
 		Every day the network will need to be trained on a new file for forecasting a clone of that to local file would be useful rather than manual copy and paste every day.
 
 		Currently only works for day ahead exactly: from 00:00 to 00:00. Read in algorithm doesn't cope with other day aheads, i.e from 13:20 to 13:20.
-
-		Algorithm currently doesn't halt at very last day, that needs to be changed. This happens because I used a stoppage in the alorithm when it reads in one day after the desired day, however as it is the last day there is no day after the desired day.
 
 ##TO DO:
 	CREATE A REAL FORECAST PREDICTOR
@@ -33,7 +30,7 @@ THIS ANALYZES FORECAST ON DAYS THAT HAVE ALREADY OCCURED
 	The other function adds 48 rows with zero load value and the predicted tempmax for the next day.
 
 6. network.py:
-	This defines the neural network. See model.png for an overview. Uses Keras. Parameters may need tuning as time goes on. Regression based neural network.
+	This defines the neural network. See model.png for an overview. Uses Keras. Parameters may need tuning as time goes on. LSTM based neural network.
 
 7. analysis.py:
 	One function graphs the predicted values.
