@@ -1,6 +1,6 @@
 ================================================================
-SHORT TERM LOAD FORECASTING ROI PROTOTYPE 1
-THIS ANALYZES FORECAST ON DAYS THAT HAVE ALREADY OCCURED
+SHORT TERM LOAD FORECASTING ROI PROTOTYPE 1 MAX LOAD
+
 ================================================================
 --------Changes to be made for REAL FORECAST--------------------
 		
