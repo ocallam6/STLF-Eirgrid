@@ -1,4 +1,6 @@
-
+'''
+Beginning of a GUI that doesn't really work well but with a few tweaks could be made work
+'''
 
 
 
