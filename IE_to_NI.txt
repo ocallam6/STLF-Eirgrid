@@ -1,0 +1,1 @@
+If NI is required, one must go through the code and replace IE with NI and replace 'Weather Item=1' with 'Weather Item=6'
