@@ -10,13 +10,20 @@ Uses daytype,temperature,holidays and utilises autocorrelation.
 Neural Network
 
 """
-def model_build(df_train,epochs,batch_size):
+
+
+def model_build(df_train,epochs,batch_size,prediction_step):
 	#####################################################################################################
 	if(epochs==0):
 		print('Weights will be loaded from file.')
 	import keras
 	from sklearn.preprocessing import MinMaxScaler
-	from keras.layers import GRU, Dense, Input, Flatten, Dropout, Conv1D,LSTM,BatchNormalization,GRUCell
+	'''
+	GRU sometimes has benefits over LSTM for a RNN
+	Dense is a standard feedforward layer
+	Dropout not used but can be implemented, sometimes makes better
+	'''
+	from keras.layers import GRU, Dense, Input, Flatten, Dropout, Conv1D,LSTM
 	from keras.models import Model
 	from keras.utils import plot_model
 	from keras.callbacks import ModelCheckpoint
@@ -25,6 +32,12 @@ def model_build(df_train,epochs,batch_size):
 	import os	
 	from keras.layers.merge import concatenate
 	os.environ['TF_CPP_MIN_LOG_LEVEL']='3' #comment out for tf warnings
+	'''
+	Some of the tensorflow warnings may indicate that if you build tf from source you will get
+	a more optimal environment for machine learning so may be work uncommenting every time 
+	the code gets run on a new machine
+	Moreover if GPU is available then must build tensorflow-GPU
+	'''
 	#####################################################################################################
 	#Preparing Data
 	#####################################################################################################
@@ -114,72 +127,75 @@ def model_build(df_train,epochs,batch_size):
 		Likewise with other values
 		'''
 		#====================================================================================================
-		for i in range(1152*7,train.size-48):
-			loadmonth1.append(train[i-1152*7+48])
-			loadmonth2.append(train[i-960*7+48])
-			loadmonth3.append(train[i-768*7+48])
-			loadmonth4.append(train[i-576*7+48])
-			loadmonth5.append(train[i-384*7+48])
-			loadmonth6.append(train[i-192*7+48])
-			loadweek1.append(train[i-192*7+48])
-			loadweek2.append(train[i-144*7+48])
-			loadweek3.append(train[i-96*7+48])
-			loadweek4.append(train[i-48*7+48])
+		
+		
+		
+		for i in range(1152*7,train.size-prediction_step):
+			loadmonth1.append(train[i-1152*7+prediction_step])
+			loadmonth2.append(train[i-960*7+prediction_step])
+			loadmonth3.append(train[i-768*7+prediction_step])
+			loadmonth4.append(train[i-576*7+prediction_step])
+			loadmonth5.append(train[i-384*7+prediction_step])
+			loadmonth6.append(train[i-192*7+prediction_step])
+			loadweek1.append(train[i-192*7+prediction_step])
+			loadweek2.append(train[i-144*7+prediction_step])
+			loadweek3.append(train[i-96*7+prediction_step])
+			loadweek4.append(train[i-48*7+prediction_step])
 			lhour.append(train[i-48:i+1,0])
-			tempmonth1.append(temp[i-1152*7+48])
-			tempmonth2.append(temp[i-960*7+48])
-			tempmonth3.append(temp[i-768*7+48])
-			tempmonth4.append(temp[i-576*7+48])
-			tempmonth5.append(temp[i-384*7+48])
-			tempmonth6.append(temp[i-192*7+48])
-			windmonth1.append(wind[i-1152*7+48])
-			windmonth2.append(wind[i-960*7+48])
-			windmonth3.append(wind[i-768*7+48])
-			windmonth4.append(wind[i-576*7+48])
-			windmonth5.append(wind[i-384*7+48])
-			windmonth6.append(wind[i-192*7+48])
-			tempweek1.append(temp[i-192*7+48])
-			tempweek2.append(temp[i-144*7+48])
-			tempweek3.append(temp[i-96*7+48])
-			tempweek4.append(temp[i-48*7+48])
-			windweek1.append(wind[i-192*7+48])
-			windweek2.append(wind[i-144*7+48])
-			windweek3.append(wind[i-96*7+48])
-			windweek4.append(wind[i-48*7+48])
-			loadday1.append(train[i])
-			loadday2.append(train[i-48])
-			loadday3.append(train[i-96])
-			loadday4.append(train[i-144])
-			loadday5.append(train[i-192])
-			loadday6.append(train[i-240])
-			loadday7.append(train[i-288])
-			tempday1.append(temp[i])
-			tempday2.append(temp[i-48])
-			tempday3.append(temp[i-96])
-			tempday4.append(temp[i-144])
-			tempday5.append(temp[i-192])
-			tempday6.append(temp[i-240])
-			tempday7.append(temp[i-288])
-			windday1.append(wind[i])
-			windday2.append(wind[i-48])
-			windday3.append(wind[i-96])
-			windday4.append(wind[i-144])
-			windday5.append(wind[i-192])
-			windday6.append(wind[i-240])
-			windday7.append(wind[i-288])
+			tempmonth1.append(temp[i-1152*7+prediction_step])
+			tempmonth2.append(temp[i-960*7+prediction_step])
+			tempmonth3.append(temp[i-768*7+prediction_step])
+			tempmonth4.append(temp[i-576*7+prediction_step])
+			tempmonth5.append(temp[i-384*7+prediction_step])
+			tempmonth6.append(temp[i-192*7+prediction_step])
+			windmonth1.append(wind[i-1152*7+prediction_step])
+			windmonth2.append(wind[i-960*7+prediction_step])
+			windmonth3.append(wind[i-768*7+prediction_step])
+			windmonth4.append(wind[i-576*7+prediction_step])
+			windmonth5.append(wind[i-384*7+prediction_step])
+			windmonth6.append(wind[i-192*7+prediction_step])
+			tempweek1.append(temp[i-192*7+prediction_step])
+			tempweek2.append(temp[i-144*7+prediction_step])
+			tempweek3.append(temp[i-96*7+prediction_step])
+			tempweek4.append(temp[i-48*7+prediction_step])
+			windweek1.append(wind[i-192*7+prediction_step])
+			windweek2.append(wind[i-144*7+prediction_step])
+			windweek3.append(wind[i-96*7+prediction_step])
+			windweek4.append(wind[i-48*7+prediction_step])
+			loadday1.append(train[i+prediction_step-48])
+			loadday2.append(train[i-48+prediction_step-48])
+			loadday3.append(train[i-96+prediction_step-48])
+			loadday4.append(train[i-144+prediction_step-48])
+			loadday5.append(train[i-192+prediction_step-48])
+			loadday6.append(train[i-240+prediction_step-48])
+			loadday7.append(train[i-288+prediction_step-48])
+			tempday1.append(temp[i+prediction_step-48])
+			tempday2.append(temp[i-48+prediction_step-48])
+			tempday3.append(temp[i-96+prediction_step-48])
+			tempday4.append(temp[i-144+prediction_step-48])
+			tempday5.append(temp[i-192+prediction_step-48])
+			tempday6.append(temp[i-240+prediction_step-48])
+			tempday7.append(temp[i-288+prediction_step-48])
+			windday1.append(wind[i+prediction_step-48])
+			windday2.append(wind[i-48+prediction_step-48])
+			windday3.append(wind[i-96+prediction_step-48])
+			windday4.append(wind[i-144+prediction_step-48])
+			windday5.append(wind[i-192+prediction_step-48])
+			windday6.append(wind[i-240+prediction_step-48])
+			windday7.append(wind[i-288+prediction_step-48])
 
 
 
 
 
-		for i in range(1152*7,train.size-48):
-			seasons.append(season[i+48])
-			target.append(train[i+48])
-			daytype.append(days[i+48])
-			excludes.append(exclude[i+48])
-			temps.append(temp[i+48])
-			lunchs.append(lunch[i+48])
-			winds.append(wind[i+48])
+		for i in range(1152*7,train.size-prediction_step):
+			seasons.append(season[i+prediction_step])
+			target.append(train[i+prediction_step])
+			daytype.append(days[i+prediction_step])
+			excludes.append(exclude[i+prediction_step])
+			temps.append(temp[i+prediction_step])
+			lunchs.append(lunch[i+prediction_step])
+			winds.append(wind[i+prediction_step])
 		loadday1=np.array(loadday1)
 		loadday2=np.array(loadday2)
 		loadday3=np.array(loadday3)
@@ -402,7 +418,7 @@ def model_build(df_train,epochs,batch_size):
 
 
 
-def predict(model,df_train):#should be test but it works
+def predict(model,df_train,prediction_step):#should be test but it works
 	from keras.utils import plot_model
 	from sklearn.preprocessing import MinMaxScaler
 	import pandas as pd
@@ -493,72 +509,75 @@ def predict(model,df_train):#should be test but it works
 		Likewise with other values
 		'''
 		#====================================================================================================
-		for i in range(1152*7,train.size-48):
-			loadmonth1.append(train[i-1152*7+48])
-			loadmonth2.append(train[i-960*7+48])
-			loadmonth3.append(train[i-768*7+48])
-			loadmonth4.append(train[i-576*7+48])
-			loadmonth5.append(train[i-384*7+48])
-			loadmonth6.append(train[i-192*7+48])
-			loadweek1.append(train[i-192*7+48])
-			loadweek2.append(train[i-144*7+48])
-			loadweek3.append(train[i-96*7+48])
-			loadweek4.append(train[i-48*7+48])
+		
+		
+		
+		for i in range(1152*7,train.size-prediction_step):
+			loadmonth1.append(train[i-1152*7+prediction_step])
+			loadmonth2.append(train[i-960*7+prediction_step])
+			loadmonth3.append(train[i-768*7+prediction_step])
+			loadmonth4.append(train[i-576*7+prediction_step])
+			loadmonth5.append(train[i-384*7+prediction_step])
+			loadmonth6.append(train[i-192*7+prediction_step])
+			loadweek1.append(train[i-192*7+prediction_step])
+			loadweek2.append(train[i-144*7+prediction_step])
+			loadweek3.append(train[i-96*7+prediction_step])
+			loadweek4.append(train[i-48*7+prediction_step])
 			lhour.append(train[i-48:i+1,0])
-			tempmonth1.append(temp[i-1152*7+48])
-			tempmonth2.append(temp[i-960*7+48])
-			tempmonth3.append(temp[i-768*7+48])
-			tempmonth4.append(temp[i-576*7+48])
-			tempmonth5.append(temp[i-384*7+48])
-			tempmonth6.append(temp[i-192*7+48])
-			windmonth1.append(wind[i-1152*7+48])
-			windmonth2.append(wind[i-960*7+48])
-			windmonth3.append(wind[i-768*7+48])
-			windmonth4.append(wind[i-576*7+48])
-			windmonth5.append(wind[i-384*7+48])
-			windmonth6.append(wind[i-192*7+48])
-			tempweek1.append(temp[i-192*7+48])
-			tempweek2.append(temp[i-144*7+48])
-			tempweek3.append(temp[i-96*7+48])
-			tempweek4.append(temp[i-48*7+48])
-			windweek1.append(wind[i-192*7+48])
-			windweek2.append(wind[i-144*7+48])
-			windweek3.append(wind[i-96*7+48])
-			windweek4.append(wind[i-48*7+48])
-			loadday1.append(train[i])
-			loadday2.append(train[i-48])
-			loadday3.append(train[i-96])
-			loadday4.append(train[i-144])
-			loadday5.append(train[i-192])
-			loadday6.append(train[i-240])
-			loadday7.append(train[i-288])
-			tempday1.append(temp[i])
-			tempday2.append(temp[i-48])
-			tempday3.append(temp[i-96])
-			tempday4.append(temp[i-144])
-			tempday5.append(temp[i-192])
-			tempday6.append(temp[i-240])
-			tempday7.append(temp[i-288])
-			windday1.append(wind[i])
-			windday2.append(wind[i-48])
-			windday3.append(wind[i-96])
-			windday4.append(wind[i-144])
-			windday5.append(wind[i-192])
-			windday6.append(wind[i-240])
-			windday7.append(wind[i-288])
+			tempmonth1.append(temp[i-1152*7+prediction_step])
+			tempmonth2.append(temp[i-960*7+prediction_step])
+			tempmonth3.append(temp[i-768*7+prediction_step])
+			tempmonth4.append(temp[i-576*7+prediction_step])
+			tempmonth5.append(temp[i-384*7+prediction_step])
+			tempmonth6.append(temp[i-192*7+prediction_step])
+			windmonth1.append(wind[i-1152*7+prediction_step])
+			windmonth2.append(wind[i-960*7+prediction_step])
+			windmonth3.append(wind[i-768*7+prediction_step])
+			windmonth4.append(wind[i-576*7+prediction_step])
+			windmonth5.append(wind[i-384*7+prediction_step])
+			windmonth6.append(wind[i-192*7+prediction_step])
+			tempweek1.append(temp[i-192*7+prediction_step])
+			tempweek2.append(temp[i-144*7+prediction_step])
+			tempweek3.append(temp[i-96*7+prediction_step])
+			tempweek4.append(temp[i-48*7+prediction_step])
+			windweek1.append(wind[i-192*7+prediction_step])
+			windweek2.append(wind[i-144*7+prediction_step])
+			windweek3.append(wind[i-96*7+prediction_step])
+			windweek4.append(wind[i-48*7+prediction_step])
+			loadday1.append(train[i+prediction_step-48])
+			loadday2.append(train[i-48+prediction_step-48])
+			loadday3.append(train[i-96+prediction_step-48])
+			loadday4.append(train[i-144+prediction_step-48])
+			loadday5.append(train[i-192+prediction_step-48])
+			loadday6.append(train[i-240+prediction_step-48])
+			loadday7.append(train[i-288+prediction_step-48])
+			tempday1.append(temp[i+prediction_step-48])
+			tempday2.append(temp[i-48+prediction_step-48])
+			tempday3.append(temp[i-96+prediction_step-48])
+			tempday4.append(temp[i-144+prediction_step-48])
+			tempday5.append(temp[i-192+prediction_step-48])
+			tempday6.append(temp[i-240+prediction_step-48])
+			tempday7.append(temp[i-288+prediction_step-48])
+			windday1.append(wind[i+prediction_step-48])
+			windday2.append(wind[i-48+prediction_step-48])
+			windday3.append(wind[i-96+prediction_step-48])
+			windday4.append(wind[i-144+prediction_step-48])
+			windday5.append(wind[i-192+prediction_step-48])
+			windday6.append(wind[i-240+prediction_step-48])
+			windday7.append(wind[i-288+prediction_step-48])
 
 
 
 
 
-		for i in range(1152*7,train.size-48):
-			seasons.append(season[i+48])
-			target.append(train[i+48])
-			daytype.append(days[i+48])
-			excludes.append(exclude[i+48])
-			temps.append(temp[i+48])
-			lunchs.append(lunch[i+48])
-			winds.append(wind[i+48])
+		for i in range(1152*7,train.size-prediction_step):
+			seasons.append(season[i+prediction_step])
+			target.append(train[i+prediction_step])
+			daytype.append(days[i+prediction_step])
+			excludes.append(exclude[i+prediction_step])
+			temps.append(temp[i+prediction_step])
+			lunchs.append(lunch[i+prediction_step])
+			winds.append(wind[i+prediction_step])
 		loadday1=np.array(loadday1)
 		loadday2=np.array(loadday2)
 		loadday3=np.array(loadday3)
@@ -613,7 +632,6 @@ def predict(model,df_train):#should be test but it works
 		windweek4=np.array(windweek4)
 		inputs=np.array(lhour)
 		lunchs=np.array(lunchs)
-
 		target,daytype,excludes,temps,winds,seasons=np.array(target),np.array(daytype),np.array(excludes),np.array(temps),np.array(winds),np.array(seasons)
 		#only need to really reshape any values going into an RNN
 		inputs=np.reshape(inputs,(inputs.shape[0],inputs.shape[1],1))
