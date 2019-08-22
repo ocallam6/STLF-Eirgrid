@@ -45,14 +45,15 @@ tempmax=23
 df_train,df_predict=predict_data(df_train,date_end,date_predict,tempmax_predict)
 '''
 #---------------------------------------------------------------------------
-
+prediction_step=48
+val_preappended_data=8046
 #===========================================================================
-model=model_build(df_train,epochs=5,batch_size=32)
+model=model_build(df_train,epochs=5,batch_size=32,prediction_step)
 model.load_weights("weights.best.hdf5")
 model.compile(optimizer='adam',loss='mean_squared_error',metrics=[keras.losses.mean_absolute_percentage_error])
 #===========================================================================
-predictions=predict(model,df_test)
-df_test.drop(df_test.head(8112).index,inplace=True) #8112 corresponds to the removal of values used to make prediction
+predictions=predict(model,df_test,prediction_step)
+df_test.drop(df_test.head(val_preappended_data+prediction_step).index,inplace=True) #8112 corresponds to the removal of values used to make prediction
 df_test['Predicted']=predictions.values
 #===========================================================================
 plot_values(df_test)
