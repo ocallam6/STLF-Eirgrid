@@ -9,3 +9,6 @@ STLF for ROI using Neural Networks - EirGrid
 
 # Max_load
   Predicts the day ahead peak load. Regression based nn.
+  
+ 
+ If this code is ever used again or for enquiries please let me know at ocallam6@tcd.ie
