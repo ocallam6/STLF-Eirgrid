@@ -12,8 +12,8 @@ Uses daytype,temperature,holidays and utilises autocorrelation.
 import os
 
 #Spring Forward, Fall Back
-forward=[';Date=30-Mar-2014',';Date=29-Mar-2015',';Date=27-Mar-2016',';Date=26-Mar-2017',';Date=25-Mar-2018',';Date=31-Mar-2019']
-backward=[';Date=26-Oct-2014',';Date=25-Oct-2015',';Date=30-Oct-2016'';Date=29-Oct-2017'';Date=28-Oct-2018'';Date=27-Oct-2019']
+forward=[';Date=30-Mar-2014',';Date=29-Mar-2015',';Date=27-Mar-2016',';Date=26-Mar-2017',';Date=25-Mar-2018',';Date=31-Mar-2019',';Date=29-Mar-2020']
+backward=[';Date=26-Oct-2014',';Date=25-Oct-2015',';Date=30-Oct-2016',';Date=29-Oct-2017',';Date=28-Oct-2018',';Date=27-Oct-2019',';Date=25-Oct-2020']
 
 def extract_data(date_begin,date_end,var,loc):
     new_file=var+loc+'_'+date_begin+'_'+date_end
@@ -22,11 +22,11 @@ def extract_data(date_begin,date_end,var,loc):
     searchlines = f.readlines()
     for i, line in enumerate(searchlines):
         if "%s"%var in line and "%s"%loc in line:
-            while ';Date=%s'%date_begin not in searchlines[i]:
+            while ';Date=%s'%date_begin not in searchlines[i]: #find where date_begin is
                 i=i+1
             if ';Date=%s'%date_begin in searchlines[i]:
                 for l in searchlines[i:len(searchlines)]: 
-                    if ';Date=%s'%date_end not in l:  
+                    if ';Date=%s'%date_end not in l:          #if not the end date or the weather items
                         if('Item=1' in l or 'Item=2' in l or 'Item=3' in l or 'Item=4' in l or 'Item=5' in l or 'Item=6' in l or 'Item=7' in l or 'Item=8' in l): 
                             break
                         else:
@@ -36,6 +36,7 @@ def extract_data(date_begin,date_end,var,loc):
     return new_file
 
 def write_csv(x):
+    #All very dependent on format of raw_data.txt
     k= open(r'%s.csv'%x,"w+")
     f= open(r'%s.txt'%x)
     k.write("X \n")
@@ -52,9 +53,9 @@ def write_csv(x):
                     for word in line1.split():
                         appending.append(word)                  
                     for j in range(0,2):
-                        k.write("%s \n" %appending[j]) #mightneed to be .split
+                        k.write("%s \n" %appending[j]) 
+                    k.write("0.00 \n") #daylight saving will be linearly interpolated
                     k.write("0.00 \n")
-                    k.write("0.00 \n")#i think string
                     for j in range(2,len(appending)):
                         k.write("%s \n" %appending[j])
                     for m in range(2,6):
@@ -75,7 +76,7 @@ def write_csv(x):
                     for word in line1.split():
                         appending.append(word)                    
                     for j in range(0,4):
-                        k.write("%s \n" %appending[j]) #mightneed to be .split
+                        k.write("%s \n" %appending[j]) #removes double count
                     for j in range(6,len(appending)):
                         k.write("%s \n" %appending[j])
                     for m in range(2,8):
@@ -92,7 +93,7 @@ def write_csv(x):
 def raw_to_csv(date_begin,date_end,var,loc):
     name = extract_data(date_begin,date_end,var,loc)
     write_csv(name)
-    os.remove(r'%s.txt'%name)
+    os.remove(r'%s.txt'%name) #removes obsolete files
 
 
 
