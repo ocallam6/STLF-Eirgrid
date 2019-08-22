@@ -33,9 +33,10 @@ clean_csv(date_begin,date_end)
 #===========================================================================
 df_train=datas(date_begin,date_end)
 #===========================================================================
-
+prediction_step=48
+val_preappended_data=8046
 #---------------------------------------------------------------------------
-df_train,df_test=data_split(df_train)
+df_train,df_test=data_split(df_train,val_preappended_data)
 #---------------------------------------------------------------------------
 '''
 data_split for analysis
@@ -45,8 +46,7 @@ tempmax=23
 df_train,df_predict=predict_data(df_train,date_end,date_predict,tempmax_predict)
 '''
 #---------------------------------------------------------------------------
-prediction_step=48
-val_preappended_data=8046
+
 #===========================================================================
 model=model_build(df_train,epochs=5,batch_size=32,prediction_step)
 model.load_weights("weights.best.hdf5")
