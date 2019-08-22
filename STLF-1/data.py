@@ -13,6 +13,10 @@ from readfile import excludes
 import pandas as pd 
 import numpy as np
 import os
+
+location='IE' #='NI for northern ireland
+
+
 def datas(date_begin,date_end):
 	print('Loading Data... \n')
 	try:
@@ -20,17 +24,22 @@ def datas(date_begin,date_end):
 			return var+loc+'_'+date_begin+'_'+date_end
 		date_rng= pd.date_range(start=date_begin,end=date_end,freq='30min')
 		df=pd.DataFrame(date_rng,columns=['Date and Time'])
-		col_title=df_col_name(date_begin,date_end,'Load','IE')
+		col_title=df_col_name(date_begin,date_end,'Load',location)
 		df['Load']=pd.read_csv(r'%s.csv'%col_title)
 		os.remove(r'%s.csv'%col_title)
-		col_title=df_col_name(date_begin,date_end,'Weather Item=1','')
+		#col_title=df_col_name(date_begin,date_end,'Weather Item=6','') #for NI
+		col_title=df_col_name(date_begin,date_end,'Weather Item=1','') #for IE
 		df['Temp']=pd.read_csv(r'%s.csv'%col_title)
 		os.remove(r'%s.csv'%col_title)
-		col_title=df_col_name(date_begin,date_end,'Weather Item=2','')
+		col_title=df_col_name(date_begin,date_end,'Weather Item=2','') #wind but isn't used in model
 		df['Wind']=pd.read_csv(r'%s.csv'%col_title)
 		os.remove(r'%s.csv'%col_title)
+		
+		#data going into neural network needs to be normalised or mapped into [-1,1]
+		
 		def season(month):
 			return month // 4
+		
 		def excluding(day):
 			from datetime import date
 			import datetime
@@ -68,20 +77,21 @@ def datas(date_begin,date_end):
 			return wind/10
 
 		df['Lunch']=df['Date and Time'].dt.hour.apply(lunchtime)
-		exclude_days=excludes('IE')
+		exclude_days=excludes(location)
 		df['Excluding']=df['Date and Time'].dt.date.apply(excluding)
 		df['Days']=df['Date and Time'].dt.date.apply(daytype)
 		df.drop(df.tail(1).index,inplace=True) #one extra row in df
 		df['Time']=df['Date and Time'].dt.date
 		df['Month']=df['Date and Time'].dt.month
 		df['Season']=df['Date and Time'].dt.month.apply(season)
-
-		#maxs=df.groupby('Time').Temp.max()
-		#df.set_index(['Time'],inplace=True)
-		#df['Maxs']=maxs
-		#df.reset_index(inplace=True)
-		#df['Temp']=df.Maxs.apply(tempfn)
-		df['Temp']=df.Temp.apply(tempfn)
+		#--------------------------------------#
+		maxs=df.groupby('Time').Temp.max()     #
+		df.set_index(['Time'],inplace=True)    #
+		df['Maxs']=maxs                        #
+		df.reset_index(inplace=True)           #
+		df['Temp']=df.Maxs.apply(tempfn)       #
+		#--------------------------------------#
+		#df['Temp']=df.Temp.apply(tempfn)     #uncomment and comment out above box if rather use just temperature, traintestwould need to be changed though
 		df['Wind']=df.Wind.apply(windfn)
 		print('Data loaded successfully.\n')
 
