@@ -10,14 +10,20 @@ Uses daytype,temperature,holidays and utilises autocorrelation.
 Plots and Analysis
 """
 def plot_values(df):
+	#plot of actual vs predicted
 	import pandas as pd 
 	import matplotlib.pyplot as plt 
-	plt.plot('Date and Time','Load',data=df,marker='',color='blue',linewidth=1)
-	plt.plot('Date and Time','Predicted',data=df,marker='',color='red',linewidth=1)
-	plt.legend()
-	plt.show()
+	try:
+		plt.plot('Date and Time','Load',data=df,marker='',color='blue',linewidth=1)
+		plt.plot('Date and Time','Predicted',data=df,marker='',color='red',linewidth=1)
+		plt.legend()
+		plt.show()
+	except:
+		print('Plot Error -- Ignore if real prediction.)
+		
 
 def errors(df):
+	#mape calculation on predicted vs actual
 	import pandas as pd 
 	import matplotlib.pyplot as plt 
 	import numpy as np
