@@ -11,13 +11,13 @@ Uses daytype,temperature,holidays and utilises autocorrelation.
 
 """
 
-def data_split(df):
-	df_test=df.tail(8112+48)
+def data_split(df,val_preappended_data):
+	df_test=df.tail(val_preappended_data+48)
 	df.drop(df.tail(48).index,inplace=True)
 	#df.drop(df.tail(8112+48).index,inplace=True)#should that just ve 48
 	return df,df_test
 
-def predict_data(df_train,date_end,date_predict,temp):
+def predict_data(df_train,date_end,date_predict,temp,val_preappended_data):
 	date_rng=pd.date_range(start=date_end,end=date_predict,freq='30min')
 	df=pd.DataFrame(date_rng,columns=['Date and Time'])
 	df['Temp']=temp
@@ -82,6 +82,6 @@ def predict_data(df_train,date_end,date_predict,temp):
 	df=df.fillna(0)
 
 	df_train=df_train.append(df,ignore_index=True)
-	df_predict=df_train.tail(8112+48)
+	df_predict=df_train.tail(val_preappended_data+48)
 	df_train.drop(df_train.tail(48).index,inplace=True)
 	return df_train,df_predict
