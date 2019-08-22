@@ -91,7 +91,7 @@ def clean_csv(start_date,end_date):
 
     orig.close()
 
-    #raw_to_csv(start_date,end_date,'Weather Item=4','')
+    #raw_to_csv(start_date,end_date,'Weather Item=6','') #for northern ireland temperature
     raw_to_csv(start_date,end_date,'Weather Item=1','')
     raw_to_csv(start_date,end_date,'Weather Item=2','')
-    #raw_to_csv(start_date,end_date,'Weather Item=3','')
+    
