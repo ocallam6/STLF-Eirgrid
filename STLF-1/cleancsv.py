@@ -15,7 +15,7 @@ import numpy as np
 from Raw_To_CSV import raw_to_csv
 import os
 
-
+location='IE'           #location variable, NI is northern ireland
 
 def clean_csv(start_date,end_date):
 
@@ -25,10 +25,11 @@ def clean_csv(start_date,end_date):
         return True
       except ValueError:
         return False
-    raw_to_csv(start_date,end_date,'Load','IE') 
+    #csv creation
+    raw_to_csv(start_date,end_date,'Load',location) 
     def df_col_name(date_begin,date_end,var,loc):
         return var+loc+'_'+date_begin+'_'+date_end
-    col_title=df_col_name(start_date,end_date,'Load','IE')
+    col_title=df_col_name(start_date,end_date,'Load',location)
     date_rng = pd.date_range(start = start_date, end= end_date,freq='30min') #timestamp
     df = pd.DataFrame(date_rng, columns=['Date and Time'])
     new_col = pd.read_csv(r'%s.csv'%col_title)     #doesn't write anything new
@@ -43,9 +44,9 @@ def clean_csv(start_date,end_date):
         line = lines[i]
         su=0
         for word in line.split():
-            if(word=='0.00'):
+            if(word=='0.00'): #find zeros
                     
-                    su=str(round((float(lines[i-2].split(' ',1)[0])+float(lines[i+2].split(' ',1)[0]))/2,2))
+                    su=str(round((float(lines[i-2].split(' ',1)[0])+float(lines[i+2].split(' ',1)[0]))/2,2)) #linearly interpolate
 
                     new.write('%s \n'%su)
                     
@@ -72,7 +73,7 @@ def clean_csv(start_date,end_date):
         if (lines[i-1]==lines[i]):
             
             for word in line.split():
-                su=str(round((float(lines[i-1].split(' ',1)[0])+float(lines[i+1].split(' ',1)[0]))/2,2))
+                su=str(round((float(lines[i-1].split(' ',1)[0])+float(lines[i+1].split(' ',1)[0]))/2,2)) #linearly interpolate
 
                 new.write("%s \n" %su)
         else: 
@@ -91,6 +92,7 @@ def clean_csv(start_date,end_date):
 
     orig.close()
 
+    #create the weather variable csv
     #raw_to_csv(start_date,end_date,'Weather Item=6','') #for northern ireland temperature
     raw_to_csv(start_date,end_date,'Weather Item=1','')
     raw_to_csv(start_date,end_date,'Weather Item=2','')
