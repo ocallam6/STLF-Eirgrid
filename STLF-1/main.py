@@ -1,8 +1,6 @@
 """
 Prototype1
 
-NB: Deletes first 168 days for prediction. 
-
 Neural Network Using Keras
 
 Predicts next day values. 48 steps ahead forecast.
@@ -28,7 +26,7 @@ warnings.filterwarnings("ignore") #comment out to display warnings
 start_time = time.time()
 #===========================================================================
 date_begin='16-Jul-2017'
-date_predict='01-Feb-2019'
+date_predict='01-Feb-2019'  #important for day ahead prediction
 date_end=datetime.datetime.strftime(datetime.datetime.strptime(date_predict,
 	'%d-%b-%Y')-datetime.timedelta(days=1),'%d-%b-%Y')
 clean_csv(date_begin,date_end)
@@ -49,12 +47,12 @@ df_train,df_predict=predict_data(df_train,date_end,date_predict,tempmax_predict)
 #---------------------------------------------------------------------------
 
 #===========================================================================
-model=model_build(df_train,epochs=1,batch_size=32)
+model=model_build(df_train,epochs=5,batch_size=32)
 model.load_weights("weights.best.hdf5")
 model.compile(optimizer='adam',loss='mean_squared_error',metrics=[keras.losses.mean_absolute_percentage_error])
 #===========================================================================
 predictions=predict(model,df_test)
-df_test.drop(df_test.head(8112).index,inplace=True)
+df_test.drop(df_test.head(8112).index,inplace=True) #8112 corresponds to the removal of values used to make prediction
 df_test['Predicted']=predictions.values
 #===========================================================================
 plot_values(df_test)
