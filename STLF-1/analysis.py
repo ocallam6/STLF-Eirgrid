@@ -19,7 +19,7 @@ def plot_values(df):
 		plt.legend()
 		plt.show()
 	except:
-		print('Plot Error -- Ignore if real prediction.)
+		print('Plot Error -- Ignore if real prediction.')
 		
 
 def errors(df):

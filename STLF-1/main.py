@@ -48,7 +48,7 @@ df_train,df_predict=predict_data(df_train,date_end,date_predict,tempmax_predict)
 #---------------------------------------------------------------------------
 
 #===========================================================================
-model=model_build(df_train,epochs=5,batch_size=32,prediction_step)
+model=model_build(df_train,epochs=5,batch_size=32,prediction_step=prediction_step)
 model.load_weights("weights.best.hdf5")
 model.compile(optimizer='adam',loss='mean_squared_error',metrics=[keras.losses.mean_absolute_percentage_error])
 #===========================================================================

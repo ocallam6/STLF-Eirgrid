@@ -100,6 +100,6 @@ def datas(date_begin,date_end):
 		print('Error Loading Data.')
 		print('Make sure load data file is up to date.')
 		print('Make sure CSV files generated.')
-		exit()
+		return
 
 		
