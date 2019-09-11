@@ -15,4 +15,4 @@
 # Data Analysis
 Not very important but may be useful, need to change the directory calling in the functions.
  
- If this code is ever used again or for enquiries please let me know at ocallam6@tcd.ie
+
