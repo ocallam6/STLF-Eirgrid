@@ -13,8 +13,8 @@ Uses daytype,temperature,holidays and utilises autocorrelation.
 import os
 def extract_data(loc):
     new_file=loc
-    k= open(r'/home/matthew/Forecasting/Data/TextFiles/%s.txt'%new_file,"w+")
-    f= open(r'/home/matthew/Forecasting/Data/Raw_Data/lf_archived_20190605_20140517.txt','r')
+    k= open(r'%s.txt'%new_file,"w+")
+    f= open(r'raw_data.txt','r')
     searchlines = f.readlines()
     for i, line in enumerate(searchlines):
         if "[EXCLUDED DATES]" in line:
@@ -26,8 +26,8 @@ def extract_data(loc):
 
 
 def write_csv(x):
-    k= open(r'/home/matthew/Forecasting/Data/CSV_Files/%s.csv'%x,"w+")
-    f= open(r'/home/matthew/Forecasting/Data/TextFiles/%s.txt'%x)
+    k= open(r'%s.csv'%x,"w+")
+    f= open(r'%s.txt'%x)
     k.write("X \n")
     s='FCA=%s'%x
     lines = f.readlines()
@@ -44,14 +44,14 @@ def write_csv(x):
 def raw_to_csv(loc):
     extract_data(loc)
     write_csv(loc)
-    os.remove(r'/home/matthew/Forecasting/Data/TextFiles/%s.txt'%loc)
+    os.remove(r'%s.txt'%loc)
 
 
 
 def excludes(loc):
     raw_to_csv(loc)
     import pandas as pd
-    dates=pd.read_csv(r'/home/matthew/Forecasting/Data/CSV_Files/%s.csv'%loc)
+    dates=pd.read_csv(r'%s.csv'%loc)
     def rem(date):
         return date[5:]
     dates['Date']=dates.ix[:,0].apply(rem)
