@@ -1,5 +1,4 @@
-# STLF-Eirgrid
-STLF for ROI using Neural Networks - EirGrid
+#STLF 
 
 # STLF-1
   Regression based neural network. Currently the best model
