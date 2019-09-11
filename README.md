@@ -1,4 +1,4 @@
-#STLF 
+# Short Term Load Forecasting Republic of Ireland
 
 # STLF-1
   Regression based neural network. Currently the best model
